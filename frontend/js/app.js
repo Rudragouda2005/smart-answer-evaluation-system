@@ -4,7 +4,7 @@
  */
 
 // Production backend on Render (update URL after deploy if your service name differs)
-const PRODUCTION_API = "https://smart-answer-evaluation-api.onrender.com/api";
+const PRODUCTION_API = "https://smart-answer-evaluation-system-1.onrender.com";
 
 /**
  * Uses local backend on localhost; uses Render URL on GitHub Pages.
