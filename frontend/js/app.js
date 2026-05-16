@@ -3,7 +3,24 @@
  * Connects to Java backend LCS API and renders results with visualizations.
  */
 
-const API_BASE = "http://localhost:8080/api";
+// Production backend on Render (update URL after deploy if your service name differs)
+const PRODUCTION_API = "https://smart-answer-evaluation-api.onrender.com/api";
+
+/**
+ * Uses local backend on localhost; uses Render URL on GitHub Pages.
+ */
+function getApiBase() {
+    const host = window.location.hostname;
+    if (host === "localhost" || host === "127.0.0.1" || host === "") {
+        return "http://localhost:8080/api";
+    }
+    if (host.includes("github.io")) {
+        return PRODUCTION_API;
+    }
+    return PRODUCTION_API;
+}
+
+const API_BASE = getApiBase();
 
 const SAMPLE_1 = {
     teacher: "Photosynthesis is the process by which green plants convert light energy into chemical energy. Chlorophyll in leaves absorbs sunlight and uses carbon dioxide and water to produce glucose and oxygen.",

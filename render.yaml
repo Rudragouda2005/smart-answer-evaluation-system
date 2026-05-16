@@ -1,0 +1,14 @@
+# Render Blueprint — deploy backend from GitHub
+# Docs: https://render.com/docs/blueprint-spec
+services:
+  - type: web
+    name: smart-answer-evaluation-api
+    runtime: docker
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: ./backend
+    region: singapore
+    plan: free
+    healthCheckPath: /api/health
+    envVars:
+      - key: JAVA_TOOL_OPTIONS
+        value: -Xmx512m

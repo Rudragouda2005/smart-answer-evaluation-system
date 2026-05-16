@@ -53,11 +53,18 @@ echo Pushing to GitHub...
 
 if errorlevel 1 (
     echo.
-    echo Push failed. Common fixes:
-    echo  1. Create the empty repo on GitHub first
-    echo  2. Sign in when prompted ^(use Personal Access Token as password^)
-    echo  3. Run: "%GIT%" pull origin main --rebase
-    echo     then run this script again
+    echo Push rejected? Remote may have a README. Trying merge...
+    "%GIT%" pull origin main --allow-unrelated-histories --no-edit
+    if exist ".gitignore" (
+        echo If merge conflict in .gitignore, keep project version and run:
+        echo   git add .gitignore
+        echo   git commit -m "Merge with GitHub"
+        echo   git push -u origin main
+    )
+    echo.
+    echo Other fixes:
+    echo  1. Create empty repo on GitHub ^(no README^)
+    echo  2. Use Personal Access Token as password when prompted
 ) else (
     echo.
     echo Success! Enable GitHub Pages:
