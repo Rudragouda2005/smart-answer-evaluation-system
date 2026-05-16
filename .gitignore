@@ -4,6 +4,8 @@ backend/.mvn/wrapper/maven-wrapper.jar
 *.class
 *.jar
 *.war
+*.nar
+*.ear
 
 # IDE
 .idea/
@@ -19,6 +21,13 @@ Thumbs.db
 
 # Logs
 *.log
+hs_err_pid*
+replay_pid*
 
-# Local tools / scripts output
+# Archives
+*.zip
+*.tar.gz
+*.rar
+
+# Local tools
 tools/
