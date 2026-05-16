@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Answer Evaluation System | LCS Algorithm</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="bg-orbs" aria-hidden="true">
+        <span class="orb orb-1"></span>
+        <span class="orb orb-2"></span>
+        <span class="orb orb-3"></span>
+    </div>
+
+    <header class="header">
+        <div class="header-inner">
+            <div class="brand">
+                <span class="brand-icon" aria-hidden="true">📚</span>
+                <div>
+                    <h1>Smart Answer Evaluation</h1>
+                    <p class="tagline">Longest Common Subsequence (LCS) · Dynamic Programming</p>
+                </div>
+            </div>
+            <div class="header-actions">
+                <button type="button" id="themeToggle" class="btn-icon" title="Toggle dark mode" aria-label="Toggle dark mode">
+                    <span class="theme-icon-light">☀️</span>
+                    <span class="theme-icon-dark">🌙</span>
+                </button>
+                <span class="status-badge" id="backendStatus">Checking API…</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="main container">
+        <section class="hero card animate-in">
+            <h2>Automatic Answer Checking for Schools & Colleges</h2>
+            <p>Compare a teacher's model answer with a student's response. The system uses the <strong>LCS algorithm</strong> to find the longest matching word sequence and compute a similarity score.</p>
+            <div class="demo-actions">
+                <button type="button" class="btn btn-outline" id="loadSample1">Load Sample (Science)</button>
+                <button type="button" class="btn btn-outline" id="loadSample2">Load Sample (Programming)</button>
+                <button type="button" class="btn btn-outline" id="clearAll">Clear All</button>
+            </div>
+        </section>
+
+        <section class="dashboard-grid">
+            <article class="card input-card animate-in" style="animation-delay: 0.05s">
+                <div class="card-header">
+                    <h3>👩‍🏫 Teacher Answer</h3>
+                    <span class="word-count" id="teacherWordCount">0 words</span>
+                </div>
+                <textarea id="teacherAnswer" rows="8" placeholder="Enter the correct / model answer here…" aria-label="Teacher answer"></textarea>
+            </article>
+
+            <article class="card input-card animate-in" style="animation-delay: 0.1s">
+                <div class="card-header">
+                    <h3>🎓 Student Answer</h3>
+                    <span class="word-count" id="studentWordCount">0 words</span>
+                </div>
+                <textarea id="studentAnswer" rows="8" placeholder="Enter the student's answer here…" aria-label="Student answer"></textarea>
+            </article>
+        </section>
+
+        <section class="actions-bar animate-in" style="animation-delay: 0.15s">
+            <label class="realtime-toggle">
+                <input type="checkbox" id="realtimeCompare">
+                <span>Real-time comparison</span>
+            </label>
+            <button type="button" class="btn btn-primary btn-lg" id="compareBtn">
+                <span class="btn-text">Compare Answers</span>
+                <span class="btn-loader" hidden></span>
+            </button>
+        </section>
+
+        <div id="errorBanner" class="error-banner" role="alert" hidden></div>
+
+        <section id="resultsSection" class="results-section" hidden>
+            <div class="results-summary card animate-in">
+                <h3>📊 Evaluation Summary</h3>
+                <div class="summary-grid">
+                    <div class="metric-card">
+                        <span class="metric-label">Similarity</span>
+                        <div class="metric-value-wrap">
+                            <svg class="progress-ring" viewBox="0 0 120 120" aria-hidden="true">
+                                <circle class="progress-bg" cx="60" cy="60" r="52"></circle>
+                                <circle class="progress-fill" id="progressCircle" cx="60" cy="60" r="52"></circle>
+                            </svg>
+                            <span class="metric-value" id="similarityValue">0%</span>
+                        </div>
+                    </div>
+                    <div class="metric-card grade-card" id="gradeCard">
+                        <span class="metric-label">Grade</span>
+                        <span class="grade-badge" id="gradeBadge">—</span>
+                    </div>
+                    <div class="metric-card">
+                        <span class="metric-label">LCS Length</span>
+                        <span class="metric-number" id="lcsLength">0</span>
+                    </div>
+                    <div class="metric-card">
+                        <span class="metric-label">Matching Words</span>
+                        <span class="metric-number" id="matchingCount">0</span>
+                    </div>
+                </div>
+                <p class="evaluation-text" id="evaluationText"></p>
+                <button type="button" class="btn btn-secondary" id="downloadPdf">⬇ Download Result as PDF</button>
+            </div>
+
+            <div class="results-details">
+                <article class="card detail-card animate-in">
+                    <h3>🔗 LCS Sequence</h3>
+                    <p class="lcs-sequence" id="lcsSequence">—</p>
+                </article>
+
+                <article class="card detail-card animate-in">
+                    <h3>✨ Highlighted Matching Words</h3>
+                    <p class="highlight-label">Teacher answer:</p>
+                    <div class="highlight-box" id="teacherHighlight"></div>
+                    <p class="highlight-label">Student answer:</p>
+                    <div class="highlight-box" id="studentHighlight"></div>
+                </article>
+
+                <article class="card detail-card animate-in">
+                    <h3>📋 Matching Words List</h3>
+                    <ul class="matching-list" id="matchingList"></ul>
+                </article>
+
+                <article class="card detail-card animate-in">
+                    <h3>🧮 Dynamic Programming Table</h3>
+                    <p class="hint">Rows = teacher words, columns = student words. Values = LCS length up to that cell.</p>
+                    <div class="dp-table-wrap" id="dpTableWrap"></div>
+                </article>
+
+                <article class="card detail-card animate-in">
+                    <h3>📝 Step-by-Step LCS Working</h3>
+                    <ol class="steps-list" id="stepsList"></ol>
+                </article>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <p>Smart Answer Evaluation System · ADA Project · LCS Dynamic Programming</p>
+    </footer>
+
+    <div id="loadingOverlay" class="loading-overlay" hidden>
+        <div class="loader">
+            <div class="spinner"></div>
+            <p>Running LCS algorithm…</p>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
